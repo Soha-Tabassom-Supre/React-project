@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import type { Technology } from "../types/technology";
 import TechnologyCard from "./TechnologyCard";
 
@@ -8,7 +9,6 @@ export default function TechnologySection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  
   useEffect(() => {
     fetch("/technologies.json")
       .then((response) => {
@@ -24,6 +24,7 @@ export default function TechnologySection() {
       .catch((error) => {
         console.log(error);
         setError("Unable to load technologies.");
+        toast.error("Unable to load technologies.");
       })
       .finally(() => {
         setLoading(false);
@@ -35,23 +36,32 @@ export default function TechnologySection() {
     const alreadyAdded = stack.some((item) => item.id === technology.id);
 
     if (alreadyAdded) {
+      toast.warning(`${technology.name} is already in your stack.`);
       return;
     }
 
     setStack((previousStack) => [...previousStack, technology]);
+
+    toast.success(`${technology.name} added to your stack.`);
   };
 
-  
+
   const handleRemoveFromStack = (id: number) => {
+    const technology = stack.find((item) => item.id === id);
+
     setStack((previousStack) => previousStack.filter((item) => item.id !== id));
+
+    if (technology) {
+      toast.info(`${technology.name} removed from your stack.`);
+    }
   };
 
 
   const handleRemoveAll = () => {
     setStack([]);
+    toast.info("All technologies removed from your stack.");
   };
 
-  
   if (loading) {
     return (
       <section id="technologies" className="px-6 py-20 text-center">
@@ -60,7 +70,7 @@ export default function TechnologySection() {
     );
   }
 
-  
+
   if (error) {
     return (
       <section id="technologies" className="px-6 py-20 text-center">
@@ -87,7 +97,7 @@ export default function TechnologySection() {
           </p>
         </div>
 
-    
+
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="grid gap-6 md:grid-cols-2 lg:col-span-2">
             {technologies.map((technology) => (
@@ -100,6 +110,7 @@ export default function TechnologySection() {
             ))}
           </div>
 
+        
           <aside className="h-fit rounded-2xl border border-gray-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold text-gray-900">Your Stack</h3>
@@ -110,7 +121,7 @@ export default function TechnologySection() {
               </span>
             </div>
 
-    
+        
             {stack.length === 0 ? (
               <div className="mt-8 rounded-xl bg-gray-50 p-6 text-center">
                 <p className="text-sm text-gray-500">Your stack is empty.</p>
@@ -154,6 +165,7 @@ export default function TechnologySection() {
                     </div>
                   ))}
                 </div>
+
                 <button
                   type="button"
                   onClick={handleRemoveAll}
