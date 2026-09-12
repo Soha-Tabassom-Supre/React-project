@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import TechnologySection from "./components/TechnologySection";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "./components/Footer";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <Navbar />
       <Hero />
       <TechnologySection />
-
+      <Footer></Footer>
+      
       <ToastContainer
         position="top-right"
         autoClose={2500}
@@ -18,6 +20,7 @@ function App() {
         closeOnClick
         pauseOnHover
       />
+
     </>
   );
 }
